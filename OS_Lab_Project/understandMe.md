@@ -14,8 +14,8 @@
 3. [How to run the project](#3-how-to-run-the-project)
 4. [How the script is organised](#4-how-the-script-is-organised)
 5. [Line-by-Line Code Explanation](#5-line-by-line-code-explanation)
-   - [Part A — Settings](#part-a--settings-lines-1120)
-   - [Part B — Colors and Helpers](#part-b--colors-and-helpers-lines-2238)
+   - [Part A — Settings](#part-a--settings-lines-3657)
+   - [Part B — Colors and Helpers](#part-b--colors-and-helpers-lines-62113)
    - [Part C — The 9 Menu Options](#part-c--the-9-menu-options)
      - [Option 1: Disk Monitoring](#option-1-disk-monitoring)
      - [Option 2: Backup Automation](#option-2-backup-automation)
@@ -131,7 +131,7 @@ Think of it like a restaurant:
 
 ---
 
-### Part A — Settings (Lines 11–20)
+### Part A — Settings (Lines 36–57)
 
 ```bash
 BASE_DIR="$HOME/sysadmin_toolkit"
@@ -172,7 +172,7 @@ So `mkdir -p "$BACKUP_DIR" "$REPORT_DIR"` just creates the `backups/` and `repor
 
 ---
 
-### Part B — Colors and Helpers (Lines 22–38)
+### Part B — Colors and Helpers (Lines 62–113)
 
 #### Colors
 
@@ -247,7 +247,7 @@ If you type `y` or `Y`, it proceeds. If you type `n` or anything else, it cancel
 
 ### Option 1: Disk Monitoring
 
-**📂 Code location:** Lines 40–59  
+**📂 Code location:** Lines 118–163  
 **📌 Function name:** `disk_monitor()`
 
 **Real-world analogy:**  
@@ -304,7 +304,7 @@ du -h --max-depth=1 "$HOME" 2>/dev/null | sort -rh | head -6
 
 ### Option 2: Backup Automation
 
-**📂 Code location:** Lines 61–117  
+**📂 Code location:** Lines 173–251  
 **📌 Function name:** `backup_menu()` which calls sub-functions
 
 **Real-world analogy:**  
@@ -373,7 +373,7 @@ Before deleting, it always asks `Delete these old backups? (y/n):` to prevent ac
 
 ### Option 3: Process Management
 
-**📂 Code location:** Lines 119–142  
+**📂 Code location:** Lines 258–326  
 **📌 Function name:** `process_menu()`
 
 **Real-world analogy:**  
@@ -442,7 +442,7 @@ If all three pass, `kill "$pid"` sends a **SIGTERM** signal (Signal 15) which po
 
 ### Option 4: System Health Check
 
-**📂 Code location:** Lines 144–177  
+**📂 Code location:** Lines 335–396  
 **📌 Function name:** `health_check()`
 
 **Real-world analogy:**  
@@ -501,7 +501,7 @@ root=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
 
 ### Option 5: Save Report
 
-**📂 Code location:** Lines 179–192  
+**📂 Code location:** Lines 403–434  
 **📌 Function name:** `save_report()`
 
 **Real-world analogy:**  
@@ -539,7 +539,7 @@ Mem:           7.7G        3.1G        4.6G
 
 ### Option 6: User Management
 
-**📂 Code location:** Lines 194–220  
+**📂 Code location:** Lines 442–510  
 **📌 Function name:** `user_menu()`
 
 **Real-world analogy:**  
@@ -605,7 +605,7 @@ sudo usermod -U "$u"   # Unlock
 
 ### Option 7: Network Tools
 
-**📂 Code location:** Lines 222–238  
+**📂 Code location:** Lines 519–569  
 **📌 Function name:** `network_menu()`
 
 **Real-world analogy:**  
@@ -670,7 +670,7 @@ Port 22 = SSH. Port 80 = Web server.
 
 ### Option 8: View Log File
 
-**📂 Code location:** Lines 240–244  
+**📂 Code location:** Lines 579–588  
 **📌 Function name:** `view_log()`
 
 ```bash
@@ -708,7 +708,7 @@ Every time any option is used, it was recorded there automatically by the `log()
 
 ### Part D — Auto Mode and Main Menu Loop
 
-#### Auto Mode (Lines 247–253)
+#### Auto Mode (Lines 597–606)
 
 ```bash
 if [ "$1" == "--auto" ]; then
@@ -726,7 +726,7 @@ fi
 - `> /dev/null` = Throw away all screen output (run silently in background).
 - This is designed to be used with **cron** so the computer runs these checks automatically every night.
 
-#### The Main Menu Loop (Lines 255–285)
+#### The Main Menu Loop (Lines 609–648)
 
 ```bash
 while true; do

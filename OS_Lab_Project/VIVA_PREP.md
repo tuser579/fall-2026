@@ -22,7 +22,7 @@ Quoting prevents **word splitting** and **pathname expansion (globbing)**. If a 
 #### Q4: How does the script handle both interactive menu mode and automated mode?
 **Answer:**  
 By inspecting the first positional parameter `$1`.  
-At line 247, `if [ "$1" == "--auto" ]; then` checks if the user provided `--auto`. If so, it invokes the background functions (`disk_monitor`, `health_check`, `save_report`), redirects stdout to `/dev/null`, and terminates with `exit 0`, bypassing the interactive `while` menu.
+At line 597, `if [ "$1" == "--auto" ]; then` checks if the user provided `--auto`. If so, it invokes the background functions (`disk_monitor`, `health_check`, `save_report`), redirects stdout to `/dev/null`, and terminates with `exit 0`, bypassing the interactive `while` menu.
 
 ---
 
