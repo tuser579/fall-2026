@@ -1,0 +1,1 @@
+printf "%d\n" "$(( $(date +%s) - $(stat -c %Y "$file") ))"

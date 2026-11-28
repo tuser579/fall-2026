@@ -1,7 +1,7 @@
 # 📗 understandMe.md — Complete Beginner's Guide, Usage & Viva Prep
 
 > **Welcome!**  
-> This guide explains every single line of [`toolkit.sh`](file:///f:/Fall-2026/OS_Lab_Project/toolkit.sh) (Lines 1–303) in **simple, everyday English**, shows you **how to run every option step by step**, and gives you **Viva Questions & Answers** for your OS Lab exam.
+> This guide explains every single line of [`toolkit.sh`](file:///f:/Fall-2026/OS_Lab_Project/toolkit.sh) (Lines 1–551) in **simple, everyday English**, shows you **how to run every option step by step**, and gives you **Viva Questions & Answers** for your OS Lab exam.
 
 ---
 
@@ -9,19 +9,19 @@
 
 1. [What Is This Project?](#1-what-is-this-project)
 2. [How to Run the Script (Option by Option)](#2-how-to-run-the-script-option-by-option)
-3. [Line-by-Line Code Explanation (Lines 1–303)](#3-line-by-line-code-explanation-lines-1303)
+3. [Line-by-Line Code Explanation (Lines 1–551)](#3-line-by-line-code-explanation-lines-1551)
    - [Header & Shebang (Lines 1–4)](#header--shebang-lines-14)
    - [Section 1: Settings (Lines 6–15)](#section-1-settings-lines-615)
    - [Section 2: Colors and Helper Functions (Lines 17–30)](#section-2-colors-and-helper-functions-lines-1730)
    - [Section 3: Disk Monitoring (Lines 32–55)](#section-3-disk-monitoring-lines-3255)
    - [Section 4: Backup Automation (Lines 57–126)](#section-4-backup-automation-lines-57126)
-   - [Section 5: Process Management (Lines 128–152)](#section-5-process-management-lines-128152)
-   - [Section 6: System Health Check & Save Report (Lines 154–205)](#section-6-system-health-check--save-report-lines-154205)
-   - [Section 7: User Management (Lines 207–233)](#section-7-user-management-lines-207233)
-   - [Section 8: Network Tools (Lines 235–252)](#section-8-network-tools-lines-235252)
-   - [Section 9: View Log File (Lines 254–262)](#section-9-view-log-file-lines-254262)
-   - [Section 10: Auto Mode for Cron (Lines 264–271)](#section-10-auto-mode-for-cron-lines-264271)
-   - [Section 11: Main Menu Loop (Lines 273–303)](#section-11-main-menu-loop-lines-273303)
+   - [Section 5: Process Management (Lines 128–185)](#section-5-process-management-lines-128185)
+   - [Section 6: System Health Check & Save Report (Lines 187–368)](#section-6-system-health-check--save-report-lines-187368)
+   - [Section 7: User Management (Lines 370–464)](#section-7-user-management-lines-370464)
+   - [Section 8: Network Tools (Lines 466–500)](#section-8-network-tools-lines-466500)
+   - [Section 9: View Log File (Lines 502–510)](#section-9-view-log-file-lines-502510)
+   - [Section 10: Auto Mode for Cron (Lines 512–519)](#section-10-auto-mode-for-cron-lines-512519)
+   - [Section 11: Main Menu Loop (Lines 521–551)](#section-11-main-menu-loop-lines-521551)
 4. [OS Lab Viva Questions & Easy Answers](#4-os-lab-viva-questions--easy-answers)
 
 ---
@@ -32,13 +32,13 @@
 Instead of typing long Linux commands by hand every day, you run one script and pick a number from `1` to `9` — just like using a TV remote control!
 
 ```text
-toolkit.sh (303 lines)
+toolkit.sh (551 lines)
 ├── Lines 1–4     : Script title & #!/bin/bash
 ├── Lines 6–15    : Settings (folders & warning limits)
 ├── Lines 17–30   : Colors & small helper functions
-├── Lines 32–262  : Feature functions (Menu Options 1 to 8)
-├── Lines 264–271 : Auto Mode (--auto for cron)
-└── Lines 273–303 : Main Menu Loop (Menu + Option 9 Exit)
+├── Lines 32–510  : Feature functions (Menu Options 1 to 8)
+├── Lines 512–519 : Auto Mode (--auto for cron)
+└── Lines 521–551 : Main Menu Loop (Menu + Option 9 Exit)
 ```
 
 ---
@@ -114,6 +114,8 @@ Choose an option [1-9]:
    - **CPU load** compared to your number of CPU cores (`[OK]` or `[WARNING]`).
    - **Memory (RAM) %** compared to `80%` (`[OK]` or `[WARNING]`).
    - **Root Disk `/` %** compared to `80%` (`[OK]` or `[WARNING]`).
+   - **Battery Health & Charge:** Charge %, Charging/Discharging state, and battery health % (on Linux/WSL) or Windows battery status (`wmic`).
+   - **SSD / Disk Hardware Health:** Drive SMART status (`smartctl`), Linux block device state (`/sys/block`), or Windows drive health (`wmic diskdrive`).
 
 ---
 
@@ -123,8 +125,8 @@ Choose an option [1-9]:
 
 ---
 
-### Option 6 — User Management *(Linux / WSL — requires `sudo`)*
-> ⚠️ Note: Linux user commands (`useradd`, `userdel`, `usermod`) work on **Ubuntu / WSL / Linux**, not on Windows Git Bash.
+### Option 6 — User Management *(Linux `sudo` / Windows Git Bash `Run as administrator`)*
+> ⚠️ Note: On **Ubuntu / WSL**, it uses `sudo useradd`, `userdel`, and `usermod`. On **Windows Git Bash**, it uses `net user` — right-click Git Bash and choose **Run as administrator** to add, delete, lock, or unlock Windows users.
 
 1. Type `6` and press **Enter**. You see 5 sub-options:
    - **`1` List users:** Lists all normal human user accounts on Linux.
@@ -173,7 +175,7 @@ Add this line at the bottom:
 
 ---
 
-## 3. Line-by-Line Code Explanation (Lines 1–303)
+## 3. Line-by-Line Code Explanation (Lines 1–551)
 
 ---
 
@@ -283,108 +285,123 @@ Add this line at the bottom:
 
 ---
 
-### Section 5: Process Management (Lines 128–152)
+### Section 5: Process Management (Lines 128–185)
 
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **129–133** | `process_menu() {` ... `read -rp "Choose: " c` | Shows the 4 process options and stores user choice in `c`. |
-| **134–135** | `case $c in` / `1) ps -eo pid,user,%cpu,%mem,comm --sort=-%cpu \| head -6 ;;` | Option 1: Lists running programs sorted by highest CPU (`-%cpu`) and shows header + top 5 (`head -6`). |
-| **136** | `2) ps -eo pid,user,%cpu,%mem,comm --sort=-%mem \| head -6 ;;` | Option 2: Same, sorted by highest Memory (`-%mem`). |
-| **137–138** | `3) read -rp "Process name: " n` / `pgrep -a "$n" \|\| warn ... ;;` | Option 3: Asks for a program name and searches running processes with `pgrep -a` (shows warning if none found). |
-| **139** | `4) read -rp "PID to kill: " pid` | Option 4: Asks for the PID number of the process to stop. |
-| **140** | `if ! [[ "$pid" =~ ^[0-9]+$ ]]; then err "PID must be a number"; return; fi` | **Safety Check 1:** Ensures `pid` contains only digits (`0–9`), preventing bad text input. |
-| **141** | `if ! ps -p "$pid" > /dev/null; then err "No such PID"; return; fi` | **Safety Check 2:** Checks if a process with that PID is actually running right now. |
-| **142** | `if confirm "Really kill process $pid ($(ps -p "$pid" -o comm=))?"; then` | **Safety Check 3:** Shows the process name (`comm=`) and asks `(y/n)` before killing it. |
-| **143–149** | `if kill "$pid" 2>/dev/null; then ok ...; log ...; else err ...; fi` | Sends `SIGTERM` (`kill`) to close the program politely. Shows `[OK]` if stopped, or `[ERROR]` if permission is denied. |
-| **150–152** | `*) err "Invalid option" ;;` / `esac` / `}` | Handles invalid choice and closes `process_menu`. |
+| **129–135** | `top_cpu_procs() { if ps -eo ...; then ps -eo ... \| head -6; else ps -W ...; fi }` | Shared helper: uses Linux `ps -eo ... --sort=-%cpu`, or falls back to `ps -W` / `ps -e` in Git Bash so process lists are never empty. |
+| **137–148** | `top_mem_procs() { if ps -eo ...; then ps -eo ...; elif command -v tasklist ...; fi }` | Uses `ps -eo ... --sort=-%mem` on Linux/WSL, or sorts Windows `tasklist` memory usage on Git Bash to show the top 5 RAM processes. |
+| **150–154** | `process_menu() {` ... `read -rp "Choose: " c` | Shows the 4 process options and stores user choice in `c`. |
+| **155–157** | `case $c in` / `1) top_cpu_procs ;;` / `2) top_mem_procs ;;` | Option 1 & 2 call `top_cpu_procs` / `top_mem_procs`. |
+| **158–163** | `3) read -rp "Process name: " n` / `pgrep -a` or `ps -W \| grep -i` | Option 3: Searches running processes using `pgrep -a` (Linux/WSL) or `ps -W \| grep -i` (Git Bash). |
+| **164–165** | `4) read -rp "PID to kill: " pid` / `if ! [[ "$pid" =~ ^[0-9]+$ ]] ...` | **Safety Check 1:** Ensures `pid` contains only digits (`0–9`), preventing bad text input. |
+| **166–174** | `pname=""` / `ps -p "$pid"` / `tasklist /FI "PID eq $pid"` / `if [ -z "$pname" ]` | **Safety Check 2:** Looks up the process name across Linux `ps`, Git Bash `ps`, or Windows `tasklist` and stops if not found. |
+| **175–182** | `if confirm "Really kill process $pid ($pname)?"; then kill ... \|\| taskkill ...; fi` | **Safety Check 3:** Shows `(y/n)` with the process name, then stops it via `kill` (or `taskkill` on Windows PIDs). |
+| **183–185** | `*) err "Invalid option" ;;` / `esac` / `}` | Handles invalid choice and closes `process_menu`. |
 
 ---
 
-### Section 6: System Health Check & Save Report (Lines 154–205)
+### Section 6: System Health Check & Save Report (Lines 187–368)
 
-#### `health_check()` (Lines 155–189)
+#### `get_uptime()` & `get_mem_pct()` (Lines 188–206)
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **155–159** | `health_check() {` ... `echo "Hostname/Uptime/Kernel"` | Prints computer name (`hostname`), time ON (`uptime -p`), and kernel version (`uname -r`). |
-| **161–163** | `cores=$(nproc)` / `load=$(cut -d' ' -f1 /proc/loadavg)` / `echo ...` | Gets total CPU cores (`nproc`) and 1-minute CPU load average (1st field in `/proc/loadavg`). |
-| **164–169** | `if awk -v l="$load" -v c="$cores" 'BEGIN {exit !(l > c)}'; then ...` | Uses `awk` to compare decimal `load > cores`. Warns and logs if overloaded; otherwise prints `[OK]`. |
-| **171–172** | `mem=$(free \| awk '/Mem:/ {printf "%.0f", $3/$2*100}')` / `echo ...` | Reads `free`, finds the `Mem:` row, and calculates `(used / total) * 100` rounded to a whole number. |
-| **173–178** | `if [ "$mem" -ge "$MEM_LIMIT" ]; then ...` | Compares RAM `%` against `80%`. Warns and logs if high; otherwise prints `[OK]`. |
-| **180–181** | `root=$(df / \| awk 'NR==2 {print $5}' \| tr -d '%')` / `echo ...` | Gets root `/` disk `%` from row 2 column 5 of `df /` and deletes `%` (`tr -d '%'`). |
-| **182–189** | `if [ "$root" -ge "$DISK_LIMIT" ]; then ...` / `log "Health check run"` / `}` | Compares root disk `%` against `80%`, logs `"Health check run"`, and closes `health_check`. |
+| **188–196** | `get_uptime() { if command -v uptime ...; then uptime -p; elif [ -r /proc/uptime ]; then awk ...; fi }` | Checks if `uptime` command exists (Linux/WSL). If missing (Git Bash), calculates uptime from `/proc/uptime`. |
+| **198–206** | `get_mem_pct() { if command -v free ...; then free \| awk ...; elif [ -r /proc/meminfo ]; then awk ...; fi }` | Uses `free` if installed (Linux/WSL), or reads `MemTotal` and `MemFree` from `/proc/meminfo` (Git Bash) to return RAM % used. |
 
-#### `save_report()` (Lines 191–205)
+#### `check_battery()` & `check_ssd()` (Lines 208–310)
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **191–192** | `save_report() {` / `file="$REPORT_DIR/report_$(date +%F_%H%M%S).txt"` | Builds a timestamped `.txt` report filename inside `reports/`. |
-| **193–202** | `{ echo ...; uptime; free -h; df -h ...; ps ...; who; } > "$file"` | Groups 6 commands inside `{ ... }` and saves **all** their output together into `"$file"`. |
-| **203–205** | `ok "Report saved: $file"` / `log ...` / `}` | Prints `[OK]`, logs the saved file path, and closes `save_report`. |
+| **208–252** | `check_battery() { ... }` | Reads `/sys/class/power_supply/BAT*` on Linux/WSL (charge %, status, and health % from `full/design`), or `wmic path Win32_Battery` on Git Bash. Warns if battery health `< 80%` or charge `<= 20%` while discharging. |
+| **254–310** | `check_ssd() { ... }` | Checks drive hardware health using `smartctl -H` (Linux SMART), `/sys/block/sd*` & `nvme*` (`rotational=0` means SSD), or `wmic diskdrive get Model,Status` on Git Bash. Warns if any drive reports an unhealthy state. |
+
+#### `health_check()` (Lines 312–350)
+| Line | Code | Simple Meaning |
+|---|---|---|
+| **312–316** | `health_check() {` ... `echo "Hostname/Uptime/Kernel"` | Prints computer name (`hostname`), time ON (`get_uptime`), and kernel version (`uname -r`). |
+| **318–320** | `cores=$(nproc)` / `load=$(cut -d' ' -f1 /proc/loadavg)` / `echo ...` | Gets total CPU cores (`nproc`) and 1-minute CPU load average (1st field in `/proc/loadavg`). |
+| **321–326** | `if awk -v l="$load" -v c="$cores" 'BEGIN {exit !(l > c)}'; then ...` | Uses `awk` to compare decimal `load > cores`. Warns and logs if overloaded; otherwise prints `[OK]`. |
+| **328–330** | `mem=$(get_mem_pct)` / `mem=${mem:-0}` / `echo ...` | Gets RAM % from `get_mem_pct` (`${mem:-0}` ensures it defaults to `0` if empty so integer check never crashes). |
+| **331–336** | `if [ "$mem" -ge "$MEM_LIMIT" ]; then ...` | Compares RAM `%` against `80%`. Warns and logs if high; otherwise prints `[OK]`. |
+| **338–339** | `root=$(df / \| awk 'NR==2 {print $5}' \| tr -d '%')` / `echo ...` | Gets root `/` disk `%` from row 2 column 5 of `df /` and deletes `%` (`tr -d '%'`). |
+| **340–345** | `if [ "$root" -ge "$DISK_LIMIT" ]; then ...` | Compares root disk `%` against `80%`; warns if full, otherwise prints `[OK]`. |
+| **347–350** | `check_battery` / `check_ssd` / `log "Health check run"` / `}` | Runs the battery and SSD health checks, logs `"Health check run"`, and closes `health_check`. |
+
+#### `save_report()` (Lines 352–368)
+| Line | Code | Simple Meaning |
+|---|---|---|
+| **352–353** | `save_report() {` / `file="$REPORT_DIR/report_$(date +%F_%H%M%S).txt"` | Builds a timestamped `.txt` report filename inside `reports/`. |
+| **354–365** | `{ echo ...; uptime/get_uptime; free/get_mem_pct; df; top_cpu_procs; who/whoami; } > "$file"` | Groups commands inside `{ ... }` (with safe fallbacks on Git Bash) and saves **all** output into `"$file"`. |
+| **366–368** | `ok "Report saved: $file"` / `log ...` / `}` | Prints `[OK]`, logs the saved file path, and closes `save_report`. |
 
 ---
 
-### Section 7: User Management (Lines 207–233)
+### Section 7: User Management (Lines 370–464)
 
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **208–212** | `user_menu() {` ... `read -rp "Choose: " c` | Displays the 5 user choices and saves your choice in `c`. |
-| **213–215** | `1) ... awk -F: '$3>=1000 && $3<65534 {print " - "$1}' /etc/passwd ;;` | Option 1: Splits `/etc/passwd` by `:` (`-F:`) and prints usernames whose UID (`$3`) is `1000–65533` (normal human users). |
-| **216** | `2) read -rp "New username: " u` | Option 2: Asks for the new username. |
-| **217** | `if ! [[ "$u" =~ ^[a-z_][a-z0-9_-]{0,30}$ ]]; then err "Invalid username"; return; fi` | Checks the username starts with lowercase/`_` and contains only valid characters (max 31 chars). |
-| **218** | `if id "$u" &>/dev/null; then err "User already exists"; return; fi` | Checks if that username already exists (`id "$u"`). |
-| **219–220** | `sudo useradd -m -s /bin/bash "$u" && sudo passwd "$u" && { ok ...; log ...; }` | Creates the user with a home folder (`-m`) and Bash shell (`-s /bin/bash`), sets password, then prints `[OK]` and logs it. |
-| **221** | `3) read -rp "Username to delete: " u` | Option 3: Asks which user to delete. |
-| **222** | `if [ "$u" == "$USER" ]; then err "You cannot delete yourself"; return; fi` | **Safety Guard:** Stops you from deleting your own currently logged-in account (`$USER`). |
-| **223** | `if ! id "$u" &>/dev/null; then err "No such user"; return; fi` | Checks that the user actually exists before deleting. |
-| **224–226** | `if confirm "Delete $u ...?"; then sudo userdel -r "$u" && ...; fi ;;` | Asks `(y/n)`, then deletes the user and their home folder (`userdel -r`) and logs it. |
-| **227–228** | `4) read -rp ... u` / `sudo usermod -L "$u" && { ok ...; log ...; } ;;` | Option 4: Locks the user account (`usermod -L`) so they cannot log in. |
-| **229–230** | `5) read -rp ... u` / `sudo usermod -U "$u" && { ok ...; log ...; } ;;` | Option 5: Unlocks the user account (`usermod -U`). |
-| **231–233** | `*) err "Invalid option" ;;` / `esac` / `}` | Handles invalid choice and closes `user_menu`. |
+| **371–402** | `win_user_action() { ... }` | Handles Options 2–5 on **Windows Git Bash** using `net user` (`/add`, `/delete`, `/active:no`, `/active:yes`) with `MSYS_NO_PATHCONV=1`, checking first with `net session` that Git Bash was opened as Administrator. |
+| **404–415** | `list_linux_users() { ... }` | Reads `/etc/passwd` + `/etc/shadow` (or `passwd -S` for `$USER`) and prints each user as ` - username (locked)` or `(unlocked)`. |
+| **417–421** | `user_menu() {` ... `read -rp "Choose: " c` | Displays the 5 user choices and saves your choice in `c`. |
+| **423–430** | `if [[ "$c" =~ ^[2-5]$ ]] && ! command -v useradd ...; then win_user_action "$c"; ... fi` | If running on Windows Git Bash (no `useradd`), calls `win_user_action` for choices 2–5. |
+| **433–443** | `1) ... if [ -f /etc/passwd ]; then list_linux_users; elif command -v wmic ...; fi ;;` | Option 1: Lists normal human users with `(locked)` / `(unlocked)` status on both Linux/WSL and Windows Git Bash. |
+| **444** | `2) read -rp "New username: " u` | Option 2 (Linux/WSL): Asks for the new username. |
+| **445** | `if ! [[ "$u" =~ ^[a-z_][a-z0-9_-]{0,30}$ ]]; then err "Invalid username"; return; fi` | Checks the username starts with lowercase/`_` and contains only valid characters (max 31 chars). |
+| **446** | `if id "$u" &>/dev/null; then err "User already exists"; return; fi` | Checks if that username already exists (`id "$u"`). |
+| **447–448** | `sudo useradd -m -s /bin/bash "$u" && sudo passwd "$u" && { ok ...; log ...; }` | Creates the user with a home folder (`-m`) and Bash shell (`-s /bin/bash`), sets password, then prints `[OK]` and logs it. |
+| **449** | `3) read -rp "Username to delete: " u` | Option 3: Asks which user to delete. |
+| **450** | `if [ "$u" == "$USER" ]; then err "You cannot delete yourself"; return; fi` | **Safety Guard:** Stops you from deleting your own currently logged-in account (`$USER`). |
+| **451** | `if ! id "$u" &>/dev/null; then err "No such user"; return; fi` | Checks that the user actually exists before deleting. |
+| **452–454** | `if confirm "Delete $u ...?"; then sudo -k userdel -r "$u" && ...; fi ;;` | Asks `(y/n)`, then requires `sudo` password (`-k`) before deleting the user and their home folder (`userdel -r`). |
+| **455–458** | `4) read -rp ... u` / `sudo -k usermod -L "$u" && ... ;;` | Option 4: Checks self-guard and user exists, then requires `sudo` password (`-k`) before locking (`usermod -L`). |
+| **459–461** | `5) read -rp ... u` / `sudo -k usermod -U "$u" && ... ;;` | Option 5: Checks user exists, then requires `sudo` password (`-k`) before unlocking (`usermod -U`). |
+| **462–464** | `*) err "Invalid option" ;;` / `esac` / `}` | Handles invalid choice and closes `user_menu`. |
 
 ---
 
-### Section 8: Network Tools (Lines 235–252)
+### Section 8: Network Tools (Lines 466–500)
 
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **236–239** | `network_menu() {` ... `read -rp "Choose: " c` | Prints the 3 network tools and reads user choice into `c`. |
-| **240–241** | `case $c in` / `1) ip -brief addr ;;` | Option 1: Shows all network interfaces (like `lo`, `eth0`) and their IP addresses cleanly. |
-| **242–247** | `2) if ping -c 3 -W 2 8.8.8.8 > /dev/null 2>&1; then ok ...; else err ...; log ...; fi ;;` | Option 2: Sends 3 pings (`-c 3`) with a 2s timeout (`-W 2`) to `8.8.8.8` silently (`>/dev/null 2>&1`). Prints `[OK]` or `[ERROR]`. |
-| **248** | `3) ss -tuln ;;` | Option 3: Lists open listening ports (`-t` TCP, `-u` UDP, `-l` listening, `-n` port numbers). |
-| **249–252** | `*) err ... ;;` / `esac` / `log "Network tool used"` / `}` | Logs network tool usage and closes `network_menu`. |
+| **467–470** | `network_menu() {` ... `read -rp "Choose: " c` | Prints the 3 network tools and reads user choice into `c`. |
+| **472–478** | `1) if command -v ip ...; then ip -brief addr; elif command -v ipconfig ...; fi ;;` | Option 1: Uses `ip -brief addr` on Linux/WSL, or `ipconfig` on Windows Git Bash to show full adapter and IP details. |
+| **479–489** | `2) if [[ "$(uname -s)" == MINGW* ... ]]; then ping -n 3 -w 2000 8.8.8.8; else ping -c 3 -W 2 8.8.8.8; fi ...` | Option 2: Uses Windows `ping -n 3 -w 2000` in Git Bash or Linux `ping -c 3 -W 2` on Linux/WSL to test `8.8.8.8` silently. Prints `[OK]` or `[ERROR]`. |
+| **490–496** | `3) if command -v ss ...; then ss -tuln; elif command -v netstat ...; fi ;;` | Option 3: Lists listening ports via `ss -tuln` on Linux/WSL, or `netstat -an` filtered for `LISTENING` ports on Windows Git Bash. |
+| **497–500** | `*) err ... ;;` / `esac` / `log "Network tool used"` / `}` | Logs network tool usage and closes `network_menu`. |
 
 ---
 
-### Section 9: View Log File (Lines 254–262)
+### Section 9: View Log File (Lines 502–510)
 
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **255–256** | `view_log() {` / `title "LAST 20 LOG ENTRIES"` | Starts function and prints blue heading. |
-| **257–262** | `if [ -f "$LOG_FILE" ]; then tail -20 "$LOG_FILE"; else echo "Log is empty."; fi` / `}` | If `toolkit.log` exists (`-f`), shows its last 20 lines (`tail -20`); otherwise prints `"Log is empty."`. |
+| **503–504** | `view_log() {` / `title "LAST 20 LOG ENTRIES"` | Starts function and prints blue heading. |
+| **505–510** | `if [ -f "$LOG_FILE" ]; then tail -20 "$LOG_FILE"; else echo "Log is empty."; fi` / `}` | If `toolkit.log` exists (`-f`), shows its last 20 lines (`tail -20`); otherwise prints `"Log is empty."`. |
 
 ---
 
-### Section 10: Auto Mode for Cron (Lines 264–271)
+### Section 10: Auto Mode for Cron (Lines 512–519)
 
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **265** | `if [ "$1" == "--auto" ]; then` | Checks if the first argument (`$1`) passed when starting the script is `--auto`. |
-| **266–268** | `disk_monitor > /dev/null` / `health_check > /dev/null` / `save_report > /dev/null` | Runs disk check, health check, and report saving silently (`> /dev/null` throws away screen output). |
-| **269–271** | `log "Auto mode finished"` / `exit 0` / `fi` | Writes `"Auto mode finished"` to the log and exits with code `0` (success), skipping the menu. |
+| **513** | `if [ "$1" == "--auto" ]; then` | Checks if the first argument (`$1`) passed when starting the script is `--auto`. |
+| **514–516** | `disk_monitor > /dev/null` / `health_check > /dev/null` / `save_report > /dev/null` | Runs disk check, health check, and report saving silently (`> /dev/null` throws away screen output). |
+| **517–519** | `log "Auto mode finished"` / `exit 0` / `fi` | Writes `"Auto mode finished"` to the log and exits with code `0` (success), skipping the menu. |
 
 ---
 
-### Section 11: Main Menu Loop (Lines 273–303)
+### Section 11: Main Menu Loop (Lines 521–551)
 
 | Line | Code | Simple Meaning |
 |---|---|---|
-| **274** | `while true; do` | Starts an infinite loop so the menu keeps coming back after each task finishes. |
-| **275** | `clear` | Clears the terminal screen so the menu looks fresh. |
-| **276–287** | `echo -e "${BLUE}===..."` ... `echo " 9) Exit"` | Prints the blue banner and options `1` to `9`. |
-| **288** | `read -rp "Choose an option [1-9]: " choice` | Waits for the user to type a number and saves it in `choice`. |
-| **290–298** | `case $choice in 1) disk_monitor ;; ... 8) view_log ;;` | Matches the typed number (`1`–`8`) and calls that function. |
-| **299** | `9) log "Toolkit closed"; echo "Goodbye!"; exit 0 ;;` | Option 9: Logs exit, prints `Goodbye!`, and stops the script (`exit 0`). |
-| **300–301** | `*) err "Invalid option, choose 1-9" ;;` / `esac` | If anything else was typed, prints an error and ends `case`. |
-| **302–303** | `pause` / `done` | Waits for Enter (`pause`), then jumps back to line 274 (`while true`) to show the menu again. |
+| **522** | `while true; do` | Starts an infinite loop so the menu keeps coming back after each task finishes. |
+| **523** | `clear` | Clears the terminal screen so the menu looks fresh. |
+| **524–535** | `echo -e "${BLUE}===..."` ... `echo " 9) Exit"` | Prints the blue banner and options `1` to `9`. |
+| **536** | `read -rp "Choose an option [1-9]: " choice` | Waits for the user to type a number and saves it in `choice`. |
+| **538–546** | `case $choice in 1) disk_monitor ;; ... 8) view_log ;;` | Matches the typed number (`1`–`8`) and calls that function. |
+| **547** | `9) log "Toolkit closed"; echo "Goodbye!"; exit 0 ;;` | Option 9: Logs exit, prints `Goodbye!`, and stops the script (`exit 0`). |
+| **548–549** | `*) err "Invalid option, choose 1-9" ;;` / `esac` | If anything else was typed, prints an error and ends `case`. |
+| **550–551** | `pause` / `done` | Waits for Enter (`pause`), then jumps back to line 522 (`while true`) to show the menu again. |
 
 ---
 
@@ -468,4 +485,4 @@ Practice these questions before your presentation — the answers are short, cle
 > - `ss -tuln`: Shows listening (`-l`) TCP (`-t`) and UDP (`-u`) ports using numeric ports (`-n`). `ss` is the modern, faster replacement for `netstat`.
 
 **Q18. How does `--auto` mode work with `cron`?**  
-> When launched as `./toolkit.sh --auto`, `$1` equals `"--auto"`, so lines 265–271 run `disk_monitor`, `health_check`, and `save_report` silently (`> /dev/null`), log `"Auto mode finished"`, and exit with `0` without opening the menu. In `crontab -e`, `0 2 * * *` runs it automatically every day at **2:00 AM**.
+> When launched as `./toolkit.sh --auto`, `$1` equals `"--auto"`, so lines 513–519 run `disk_monitor`, `health_check`, and `save_report` silently (`> /dev/null`), log `"Auto mode finished"`, and exit with `0` without opening the menu. In `crontab -e`, `0 2 * * *` runs it automatically every day at **2:00 AM**.
